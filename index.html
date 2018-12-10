@@ -6,16 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script defer src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.js"></script>
+    <script defer src="https://code.angularjs.org/1.7.5/angular-route.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/angularFire/2.3.0/angularfire.js"></script>
+    <script defer src="app.js"></script>
+    <!-- <script defer src="directive.js"></script> -->
+    <!-- <script defer src="controller.js"></script> -->
     <script defer src="main.js"></script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs&callback=initMap"></script>
 </head>
 
-<body class="body">
 
-    <!-- Navigation goes here -->
+<body class="body" ng-app="app">
     <div class="row">
         <div class="col-4">
             <h1 class="shroomie">Shroomie</h1>
@@ -31,18 +36,15 @@
                     <li>
                         <a href="#">Karl-Johan</a>
                     </li>
-
                 </ul>
             </div>
-
             <div class="geo-map">
-                <div class="map">Map here</div>
+                <div class="map" style="height: 50vh;">Map here</div>
             </div>
-
             <div class="findings-sidebar">
-                <img src="#" alt="Img">
-                <h2>Name of Mushroom</h2>
-                <h3>Description</h3>
+                <input type="file">
+                <input maxlength="40">Name of Mushroom</input>
+                <textarea maxlength="140">Description</textarea>
                 <button type="button" class="btn">Submit</button>
             </div>
         </div>
@@ -50,13 +52,6 @@
     </div>
     <div ng-view>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
-    <script src="https://code.angularjs.org/1.7.5/angular-route.min.js"></script>
-    <script src="app.js"></script>
-    <script src="directive.js"></script>
-    <script src="controller.js"></script>
 </body>
-
-
 
 </html>
