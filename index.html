@@ -3,11 +3,60 @@
 
 <head>
     <title></title>
-    <script  defer src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
-    <script  defer src="main.js"></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+    <script defer src="main.js"></script>
+</head>
 
-<body>
+<body class="body">
+
+
+    <div class="row">
+        <div class="col-4">
+            <h1 class="shroomie">Shroomie</h1>
+            <div class="filter-sidebar">
+                <h3>Choose specific mushrooms</h3>
+                <ul>
+                    <li>
+                        <a href="#">Champinion</a>
+                    </li>
+                    <li>
+                        <a href="#">Kantarell</a>
+                    </li>
+                    <li>
+                        <a href="#">Karl-Johan</a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="geo-map">
+                <div class="map">Map here</div>
+            </div>
+
+            <div class="findings-sidebar">
+                <img src="#" alt="Img">
+                <h2>Name of Mushroom</h2>
+                <h3>Description</h3>
+                <button type="button" class="btn">Submit</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div ng-view>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.7.5/angular-route.min.js"></script>
+    <script src="app.js"></script>
+    <script src="directive.js"></script>
+    <script src="controller.js"></script>
 </body>
+
+
 
 </html>
