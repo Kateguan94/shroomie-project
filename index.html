@@ -16,42 +16,11 @@
     <!-- <script defer src="directive.js"></script> -->
     <!-- <script defer src="controller.js"></script> -->
     <script defer src="main.js"></script>
-    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs&callback=initMap"></script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs"></script>
 </head>
 
-
 <body class="body" ng-app="app">
-    <div class="row">
-        <div class="col-4">
-            <h1 class="shroomie">Shroomie</h1>
-            <div class="filter-sidebar">
-                <h3>Choose specific mushrooms</h3>
-                <ul>
-                    <li>
-                        <a href="#">Champinion</a>
-                    </li>
-                    <li>
-                        <a href="#">Kantarell</a>
-                    </li>
-                    <li>
-                        <a href="#">Karl-Johan</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="geo-map">
-                <div class="map" style="height: 50vh;">Map here</div>
-            </div>
-            <div class="findings-sidebar">
-                <input type="file">
-                <input maxlength="40">Name of Mushroom</input>
-                <textarea maxlength="140">Description</textarea>
-                <button type="button" class="btn">Submit</button>
-            </div>
-        </div>
-    </div>
-    </div>
-    <div ng-view>
-    </div>
+    <div ng-view></div>
 </body>
 
 </html>
