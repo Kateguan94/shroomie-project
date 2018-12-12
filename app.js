@@ -21,47 +21,77 @@
             storageBucket: "mushroom-project-1544209434551.appspot.com",
             messagingSenderId: "64814358483"
         });
+        $scope.formValid = false;
+        $scope.geolocationAvailable = false;
+        // firebase.firestore().collection('mushrooms').get().then(querySnapshot => {
+        //     $scope.mushrooms = [];
+        //     querySnapshot.forEach(doc => {
+        //         $scope.mushrooms.push(doc.data());
+        //     });
+        // });
         var ref = firebase.database().ref().child("mushrooms");
         $scope.mushrooms = $firebaseArray(ref);
-        console.log($scope.mushrooms)
+        var form = document.querySelector('form');
+
+        form.oninput = _ => {
+            $scope.formValid = form.checkValidity();
+            $scope.$applyAsync();
+            console.log($scope.formValid, $scope.geolocationAvailable)
+        } // returns true when valid        
 
         $scope.$on('$viewContentLoaded', function() {
             initMap();
         });
 
-    }
+        $scope.updatePost = _ => updatePost($scope);
 
+    }
 }());
 
-function uploadFile(files) {
-    var storageRef = firebase.storage().ref();
-    var file = files[0];
-    if (!file) return;
-    var fileName = file.name.split('.'); //split the file on extension, for example mushroom.jpg will become ['mushroom','jpg'] to preserve the original extension
-    fileName[0] = uuid(); // replace the filename with UUID for uniqueness of images
-    fileName = fileName.join('.'); // join the array with a dot preserving the original extension and only replacing the first part of filename
-    var mushroomRef = storageRef.child(fileName);
-    var task = mushroomRef.put(file)
-    task.then(_ => mushroomRef.getDownloadURL()).then(url => {
+async function updatePost(angularScope) {
+    await getLocation(angularScope);
+    //Reference the document
+    var imageUrl = await uploadPicture();
+    var newMushroomId = firebase.database().ref().child('mushrooms').push().key;
+    firebase.database().ref().update({
+        ['/mushrooms/' + newMushroomId]: {
+            name: document.querySelector('input[data-input="name"]').value,
+            image: imageUrl,
+            description: document.querySelector('textarea').value
+        }
+    });
 
-        document.querySelector('#imgUpload').setAttribute('src', url)
+    // var mushroomCollection = firebase.firestore().collection('mushrooms').doc(uuid())
+    // await mushroomCollection.set({
+    //     name: document.querySelector('input[data-input="name"]').value,
+    //     image: imageUrl,
+    //     description: document.querySelector('textarea').value
+    // });
+}
+
+function getLocation(angularScope) {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                resolve(position);
+                showPosition(position, angularScope)
+            }, error => {
+                reject(error);
+                angularScope.geolocationAvailable = false;
+                console.log(getErrorMessage(error));
+            });
+        } else {
+            // show that the browser doesn't support geolocation 
+        }
     });
 }
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, error => {
-            console.log(getErrorMessage(error));
-        });
-    } else {
-        // x.innerHTML = "Geolocation is not supported by this browser.";
-    }
-}
-
-function showPosition(position) {
+function showPosition(position, angularScope) {
+    angularScope.geolocationAvailable = true;
+    //manually trigger $digest loop
+    angularScope.$applyAsync();
     console.log('Latitude: ' + position.coords.latitude +
         'Longitude: ' + position.coords.longitude);
-    document.querySelector('input[type="file"]').style.display = '';
 }
 
 function getErrorMessage(error) {
@@ -82,6 +112,45 @@ function getErrorMessage(error) {
     }
     return errorMessage;
 }
+//The submit button is disabled
+//name is required
+//picture is required 
+//validate form in from input
+//if form is valid, then enable the submit button
+//if the button is clicked for the first time, disabled the submit button and show error message
+//else disable the submit button, send the picture and wait for response
+//get the picture URL and send the name and description and picture URL to database
+//clear form
+
+
+
+
+
+async function uploadPicture() {
+    var files = document.querySelector('input[type="file"]').files;
+    var storageRef = firebase.storage().ref();
+    var file = files[0];
+    if (!file) return;
+    var fileName = file.name.split('.'); //split the file on extension, for example mushroom.jpg will become ['mushroom','jpg'] to preserve the original extension
+    fileName[0] = uuid(); // replace the filename with UUID for uniqueness of images
+    fileName = fileName.join('.'); // join the array with a dot preserving the original extension and only replacing the first part of filename
+    var mushroomRef = storageRef.child(fileName);
+    await mushroomRef.put(file);
+    return mushroomRef.getDownloadURL();
+}
+
+function showChosenImg(files) {
+    var file = files[0];
+    if (!file) return;
+    var reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+        document.querySelector('#imgUpload').setAttribute('src', event.target.result)
+    };
+
+}
+
 
 
 // Automatically called by Google Maps, it has to have this particular name
@@ -133,16 +202,3 @@ function uuid() {
     }
     return uuid;
 }
-
-
-// const database = firebase.firestore();
-
-// Reference the document
-// const myPost = database.collection('products').doc('CGl2Obsqagfm1DguguLS');
-
-// // Listen to realtime changes 
-// myPost.onSnapshot(doc => {
-
-//     const data = doc.data();
-
-// })
