@@ -20,7 +20,42 @@
 </head>
 
 <body class="body" ng-app="app">
-    <div ng-view></div>
+    <div ng-controller="MainController">
+        <div ng-show="!showMyProfile">
+            <h1>Shroomie</h1>
+            <input type="text" ng-model="search.name" placeholder="Search">
+            <div ng-repeat="mushroom in mushrooms | filter:search:strict">
+                <div>
+                    <div>{{mushroom.name}} - {{mushroom.description}}</div>
+                    <div ng-bind="mushroom.lat"></div>
+                    <div ng-bind="mushroom.long"></div>
+                </div>
+                <!-- {{ mushroom | json }} -->
+            </div>
+            <div id="userLogin">
+                <a href="#!my-profile">Me</a>
+                <button id="loginButton" onclick="login()">Login with Facebook</button>
+            </div>
+            <div class="row">
+                <div class="geo-map">
+                    <div class="map" style="height: 50vh;">Map here</div>
+                </div>
+                <form class="findings-sidebar">
+                    <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
+                    <textarea maxlength="140" style="resize:none;">Description</textarea>
+                    <img id="imgUpload" src="" width="100vw">
+                    <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
+                    <div id="progressBar" ng-show="uploadInProgress" style="position: relative; width: 50vw; height: 4px;">
+                    	<div class="bar" style="height: 4px; width: {{uploadInProgress}}%; background-color: pink; transition: 0.5s ease-in-out;"></div>
+                    </div>
+                    <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
+                </form>
+            </div>
+        </div>
+        <div ng-show="showMyProfile">
+        	<h3>This is my profile, welcome</h3>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,66 +1,121 @@
-(function() {
+angular
+    .module('app', ['ngRoute', 'firebase'])
+    .controller('MainController', ['$scope', '$firebaseArray', '$location', MainController])
+    .controller('MyProfileController', ['$scope', '$firebaseArray', MyProfileController])
+    .config(AppConfig);
 
-    angular
-        .module('app', ['ngRoute', 'firebase'])
-        .controller('MainController', ['$scope', '$firebaseArray', MainController])
-        .config(AppConfig);
+function AppConfig($routeProvider) {
+    $routeProvider.when('/', {
+        // controller: 'MainController as mainController',
+    }).when('/my-profile', {
+        // controller: 'MyProfileController as myProfileController',
+    });
+}
 
-    function AppConfig($routeProvider) {
-        $routeProvider.when('/', {
-            controller: 'MainController as mainController',
-            templateUrl: 'views/main.html'
-        });
-    }
+var initialized = false;
 
-    function MainController($scope, $firebaseArray) {
-        firebase.initializeApp({
-            apiKey: "AIzaSyCub7oG2LMQBoK6CisyZAQLlQtHSzAgvEk",
-            authDomain: "mushroom-project-1544209434551.firebaseapp.com",
-            databaseURL: "https://mushroom-project-1544209434551.firebaseio.com/",
-            projectId: "mushroom-project-1544209434551",
-            storageBucket: "mushroom-project-1544209434551.appspot.com",
-            messagingSenderId: "64814358483"
-        });
-        $scope.formValid = false;
-        $scope.geolocationAvailable = false;
-        // firebase.firestore().collection('mushrooms').get().then(querySnapshot => {
-        //     $scope.mushrooms = [];
-        //     querySnapshot.forEach(doc => {
-        //         $scope.mushrooms.push(doc.data());
-        //     });
-        // });
-        var ref = firebase.database().ref().child("mushrooms");
-        $scope.mushrooms = $firebaseArray(ref);
-        var form = document.querySelector('form');
+function MainController($scope, $firebaseArray, $location) {
+    if (initialized) return;
+    initialized = true;
+    firebase.initializeApp({
+        apiKey: "AIzaSyCub7oG2LMQBoK6CisyZAQLlQtHSzAgvEk",
+        authDomain: "mushroom-project-1544209434551.firebaseapp.com",
+        databaseURL: "https://mushroom-project-1544209434551.firebaseio.com/",
+        projectId: "mushroom-project-1544209434551",
+        storageBucket: "mushroom-project-1544209434551.appspot.com",
+        messagingSenderId: "64814358483"
+    });
+    $scope.formValid = false;
+    $scope.geolocationAvailable = false;
+    // firebase.firestore().collection('mushrooms').get().then(querySnapshot => {
+    //     $scope.mushrooms = [];
+    //     querySnapshot.forEach(doc => {
+    //         $scope.mushrooms.push(doc.data());
+    //     });
+    // });
+    var ref = firebase.database().ref().child("mushrooms");
+    $scope.mushrooms = $firebaseArray(ref);
+    var form = document.querySelector('form');
 
-        form.oninput = _ => {
-            $scope.formValid = form.checkValidity();
-            $scope.$applyAsync();
-            console.log($scope.formValid, $scope.geolocationAvailable)
-        } // returns true when valid        
+    form.oninput = _ => {
+        $scope.formValid = form.checkValidity();
+        $scope.$applyAsync();
+        console.log($scope.formValid, $scope.geolocationAvailable)
+    } // returns true when valid        
 
-        $scope.$on('$viewContentLoaded', function() {
-            initMap();
-        });
+    $scope.$on('$routeChangeSuccess', _ => {
+        var path = $location.path();
+        if (path === '/my-profile') {
+            $scope.showMyProfile = true;
+        } else {
+            $scope.showMyProfile = false;
+        }
+    });
+    initMap();
+    // $scope.$on('$viewContentLoaded', function() {
+    //     initMap();
+    // });
 
-        $scope.updatePost = _ => updatePost($scope);
+    $scope.updatePost = _ => updatePost($scope);
 
-    }
-}());
+}
+
+function MyProfileController($scope, $firebaseArray) {
+
+}
+
+function login() {
+    var loginButton = document.querySelector('#loginButton')
+    var provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        loginButton.style.display = 'none';
+        var logOutButton = document.createElement('button');
+        logOutButton.append('Log Out');
+        document.querySelector('#userLogin').appendChild(logOutButton);
+
+    }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+    });
+}
+
+// function creaLogOutButton() {
+
+// }
 
 async function updatePost(angularScope) {
-    await getLocation(angularScope);
+    angularScope.uploadInProgress = 20;
+    angularScope.$applyAsync();
+    var location = await getLocation(angularScope);
+    angularScope.uploadInProgress = 60;
+    angularScope.$applyAsync();
     //Reference the document
     var imageUrl = await uploadPicture();
+    angularScope.uploadInProgress = 100;
+    angularScope.$applyAsync();
     var newMushroomId = firebase.database().ref().child('mushrooms').push().key;
-    firebase.database().ref().update({
+    await firebase.database().ref().update({
         ['/mushrooms/' + newMushroomId]: {
             name: document.querySelector('input[data-input="name"]').value,
             image: imageUrl,
-            description: document.querySelector('textarea').value
+            description: document.querySelector('textarea').value,
+            lat: location.coords.latitude,
+            long: location.coords.longitude
         }
     });
-
+    angularScope.uploadInProgress = 0;
+    angularScope.$applyAsync();
+    console.log(angularScope.uploadInProgress)
+    document.forms[0].reset();
     // var mushroomCollection = firebase.firestore().collection('mushrooms').doc(uuid())
     // await mushroomCollection.set({
     //     name: document.querySelector('input[data-input="name"]').value,
@@ -161,10 +216,11 @@ function initMap() {
         zoom: 4
     });
     var locations = [
-        ['Stockholm', 59.329323, 18.068581],
-        ['hello', 56.046467, 12.694512],
-        ['Malmö', 55.604981, 13.003822],
-        ['Ystad', 55.429505, 13.820031],
+    
+        // ['Stockholm', 59.329323, 18.068581],
+        // ['hello', 56.046467, 12.694512],
+        // ['Malmö', 55.604981, 13.003822],
+        // ['Ystad', 55.429505, 13.820031],
     ];
 
 
