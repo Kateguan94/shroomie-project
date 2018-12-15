@@ -1,0 +1,68 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.flexBox {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+#websiteName {
+    text-align: center;
+}
+
+.map {
+    height: 64vh;
+    width: 100%;
+    max-width: 100%;
+}
+
+.map,
+#searchSection {
+    margin: 0 1vw;
+}
+
+#uploadSection {}
+
+
+#uploadForm {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#uploadSection textarea {
+    resize: none;
+}
+
+#progressBar {
+    position: relative;
+    width: 50vw;
+    height: 4px;
+}
+
+#bar {
+    height: 4px;
+    background-color: pink;
+    transition: 2s ease-in-out;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.myMushroomTile {
+	max-width: 255px;
+    padding: 16px;
+}
+
+.uploadedMushroom {
+    width: 225px;
+}

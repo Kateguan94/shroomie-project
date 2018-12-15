@@ -16,48 +16,63 @@
     <!-- <script defer src="directive.js"></script> -->
     <!-- <script defer src="controller.js"></script> -->
     <script defer src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs"></script>
 </head>
 
 <body class="body" ng-app="app">
     <div ng-controller="MainController">
         <div ng-show="!showMyProfile">
-            <h1>Shroomie</h1>
-            <input type="text" ng-model="search.name" placeholder="Search">
-            <div ng-repeat="mushroom in mushrooms | filter:search:strict">
-                <div>
-                    <div>{{mushroom.name}} - {{mushroom.description}}</div>
-                    <div ng-bind="mushroom.lat"></div>
-                    <div ng-bind="mushroom.long"></div>
-                </div>
-                <!-- {{ mushroom | json }} -->
-            </div>
-            <div id="userLogin">
-                <a href="#!my-profile" onclick="getUserInfo()">Me</a>
-            </div>
-            <div class="row">
-                <div class="geo-map">
-                    <div class="map" style="height: 50vh;">Map here</div>
-                </div>
-                <form id="uploadForm" class="findings-sidebar" style="display: none;">
-                    <button id="logOutButton" onclick="logOut()">Log Out</button>
-                    <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
-                    <textarea maxlength="140" style="resize:none;" placeholder="Description"></textarea>
-                    <img id="imgUpload" src="" width="100vw">
-                    <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
-                    <div id="progressBar" ng-show="uploadInProgress" style="position: relative; width: 50vw; height: 4px;">
-                        <div class="bar" style="height: 4px; width: {{uploadInProgress}}%; background-color: pink; transition: 0.5s ease-in-out;"></div>
+            <h1 id="websiteName">Shroomie</h1>
+            <main class="flexBox" layout="row">
+                <div id="searchSection">
+                    <input type="text" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
+                    <div ng-repeat="mushroom in filteredMushrooms">
+                        <div>
+                            <div>{{mushroom.name}}</div>
+                            <!-- <div ng-bind="mushroom.lat"></div> -->
+                            <!-- <div ng-bind="mushroom.long"></div> -->
+                        </div>
+                        <!-- {{ mushroom | json }} -->
                     </div>
-                    <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
-                </form>
-                <div id="loginSection" style="display: none;">
-                    <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
                 </div>
-            </div>
+                <div class="map">Map</div>
+                <div id="uploadSection">
+                    <form id="uploadForm" style="display: none; justify-content: center;">
+                        <div id="userInfo">
+                            <a href="#!/my-profile"><img class="userImg" src=""></a>
+                            <h5 id="welcome"></h5>
+                            <button id="logOutButton" onclick="logOut()">Log Out</button>
+                        </div>
+                        <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
+                        <textarea maxlength="140" placeholder="Description"></textarea>
+                        <img id="imgUpload" src="" width="100vw">
+                        <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
+                        <div id="progressBar" ng-show="uploadInProgress">
+                            <div id="bar" style="width: {{uploadInProgress}}%;"></div>
+                        </div>
+                        <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
+                    </form>
+                    <div id="loginSection" style="display: none;">
+                        <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
+                    </div>
+            </main>
         </div>
-        <div ng-show="showMyProfile" id ="myProfile" style="display: none;">
+        <div ng-show="showMyProfile" id="myProfile">
+            <a href="#!/">
+        		<button>Back</button>
+        	</a>
+            <img class="userImg" src="">
             <h3>This is my profile, welcome</h3>
             <button id="deleteUser" onclick="deleteUser()">Delete my account</button>
+            <div class="container">
+                <div class="myMushroomTile">
+                    <img class="uploadedMushroom" src="">
+                    <h3 class="mushroomName"></h3>
+                    <h4 class="description"></h4>
+                    <h4 class="createTime"></h4>
+                </div>
+            </div>
         </div>
     </div>
 </body>
