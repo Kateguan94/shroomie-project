@@ -51,6 +51,39 @@ body {
     transition: 2s ease-in-out;
 }
 
+nav {
+    background-color: pink;
+    height: 60px;
+}
+
+.mushroomLogo {
+    width: 60px;
+}
+
+.userProfile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 180px;
+    background-color: #ff009959;
+}
+
+.userImg {
+    width: 120px;
+   
+}
+
+#deleteUser {
+	display: flex;
+	justify-content: center;
+	border:1px solid grey;
+	border-radius: 4px;
+	background-color: white;
+	font-size: 10px;
+	width: 90px;
+}
+
 .container {
     display: flex;
     flex-direction: row;
@@ -59,7 +92,7 @@ body {
 }
 
 .myMushroomTile {
-	max-width: 255px;
+    max-width: 255px;
     padding: 16px;
 }
 

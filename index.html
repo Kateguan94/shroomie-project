@@ -23,7 +23,7 @@
 <body class="body" ng-app="app">
     <div ng-controller="MainController">
         <div ng-show="!showMyProfile">
-            <h1 id="websiteName">Shroomie</h1>
+            <h1 id="websiteName" onclick="getFacebookInfo()">Shroomie</h1>
             <main class="flexBox" layout="row">
                 <div id="searchSection">
                     <input type="text" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
@@ -59,18 +59,25 @@
             </main>
         </div>
         <div ng-show="showMyProfile" id="myProfile">
-            <a href="#!/">
-        		<button>Back</button>
-        	</a>
-            <img class="userImg" src="">
-            <h3>This is my profile, welcome</h3>
-            <button id="deleteUser" onclick="deleteUser()">Delete my account</button>
-            <div class="container">
-                <div class="myMushroomTile">
-                    <img class="uploadedMushroom" src="">
-                    <h3 class="mushroomName"></h3>
-                    <h4 class="description"></h4>
-                    <h4 class="createTime"></h4>
+            <nav>
+                <a href="#!/">
+        		<img class="mushroomLogo" src="shroomie-face.png"></img>
+        	  </a>
+            </nav>
+            <div class="userProfile">
+                <img class="userImg" src="">
+                <div id="deleteUser" onclick="deleteUser()">Delete my account</div>
+            </div>
+            </aside>
+            <div>
+                <h5 id="userName"></h5>
+                <div class="container">
+                    <div class="myMushroomTile">
+                        <img class="uploadedMushroom" src="">
+                        <h3 class="mushroomName"></h3>
+                        <h4 class="description"></h4>
+                        <h4 class="createTime"></h4>
+                    </div>
                 </div>
             </div>
         </div>

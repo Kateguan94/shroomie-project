@@ -85,7 +85,6 @@ function MainController($scope, $firebaseArray, $location) {
             // myProfileDisplay.style.display = '';
             $scope.showMyProfile = true;
             $scope.$applyAsync();
-            // myProfileDisplay.classList.remove('ng-hide');
             // console.log(myProfileDisplay);
         } else {
             $scope.showMyProfile = false;
@@ -113,7 +112,6 @@ function login() {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log(user);
         logOutButton.style.display = '';
 
 
@@ -141,30 +139,29 @@ function logOut() {
     });
 }
 
+
 function checkUser() {
     //check if any user is signed in
     var user = firebase.auth().currentUser;
     if (user) {
-        hideLoginScreen()
-    } else {
-        showLoginScreen()
-    }
+        console.log(providerData);
+    } else {}
     //console.log(user)
-    if (user) {
-        user.providerData.forEach(function(profile) {
-            //write user to firebase
-            firebase.database().ref('mushrooms/' + user.uid).set({
-                facebookId: profile.uid,
-                facebookName: profile.displayName,
-                facebookAvatar: profile.photoURL
-            });
-            // // console.log("Sign-in provider: " + profile.providerId);
-            // console.log("  Provider-specific UID: " + profile.uid);
-            // console.log("  Name: " + profile.displayName);
-            // console.log("  Email: " + profile.email);
-            // console.log("  Photo URL: " + profile.photoURL);
-        });
-    }
+    // if (user) {
+    //     user.providerData.forEach(function(profile) {
+    //         //write user to firebase
+    //         firebase.database().ref('mushrooms/' + user.uid).set({
+    //             facebookId: profile.uid,
+    //             facebookName: profile.displayName,
+    //             facebookAvatar: profile.photoURL
+    //         });
+    //         // // console.log("Sign-in provider: " + profile.providerId);
+    //         // console.log("  Provider-specific UID: " + profile.uid);
+    //         // console.log("  Name: " + profile.displayName);
+    //         // console.log("  Email: " + profile.email);
+    //         // console.log("  Photo URL: " + profile.photoURL);
+    //     });
+    // }
 }
 
 function showLoginScreen() {
@@ -181,6 +178,12 @@ function hideLoginScreen() {
 
 function deleteUser() {
     var user = firebase.auth().currentUser;
+    // firebase.database().ref('mushrooms/').orderByChild('userId').equalTo(user.uid).once("value")
+    //     .then(function(snapshot) {
+    //         console.log(snapshot.val());
+    //     });
+
+    // delete user's posts
     user.delete().then(function() {
         // User deleted.
         //redirect to main page
@@ -205,7 +208,8 @@ async function updatePost(angularScope) {
     angularScope.uploadInProgress = 100;
     angularScope.$applyAsync();
     var newMushroomId = firebase.database().ref().child('mushrooms').push().key;
-    var userId = firebase.auth().currentUser.uid;
+
+    var userId = firebase.auth().currentUser.providerData[0].uid;
     var sessionsRef = firebase.database().ref("sessions");
     await firebase.database().ref().update({
         ['/mushrooms/' + newMushroomId]: {
@@ -225,12 +229,7 @@ async function updatePost(angularScope) {
     form.reset(); // clear the form
     form.oninput(); // invoke the onclick function manually to trigger angular $digest
     document.querySelector('#imgUpload').removeAttribute('src');
-    // var mushroomCollection = firebase.firestore().collection('mushrooms').doc(uuid())
-    // await mushroomCollection.set({
-    //     name: document.querySelector('input[data-input="name"]').value,
-    //     image: imageUrl,
-    //     description: document.querySelector('textarea').value
-    // });
+
 }
 
 function delay(time) {
@@ -378,7 +377,10 @@ var myMushroomTileTemplate = document.querySelector('.myMushroomTile');
 myMushroomTileTemplate.remove();
 
 function getUserInfo() {
-    var myUserId = firebase.auth().currentUser.uid;
+    var myUser = firebase.auth().currentUser
+    var myUserId = myUser.providerData[0].uid;
+    document.querySelector('#userName').textContent = myUser.displayName + '\'s mushrooms: ';
+    console.log(myUser)
     firebase.database().ref('mushrooms/').orderByChild('userId').equalTo(myUserId).once("value")
         .then(function(snapshot) {
             var myMushrooms = snapshot.val();
@@ -390,7 +392,7 @@ function getUserInfo() {
             } else {
                 container.textContent = '';
                 var myMushroomList = Object.keys(myMushrooms).map(i => myMushrooms[i]);
-                console.log(myMushroomList)
+                // console.log(myMushroomList)
                 myMushroomList.forEach(myMushroom => {
                     var myMushroomTile = myMushroomTileTemplate.cloneNode(true);
                     myMushroomTile.querySelector('.uploadedMushroom').src = myMushroom.image;
