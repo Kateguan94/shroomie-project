@@ -1,15 +1,11 @@
 angular
     .module('app', ['ngRoute', 'firebase'])
     .controller('MainController', ['$scope', '$firebaseArray', '$location', MainController])
-    .controller('MyProfileController', ['$scope', '$firebaseArray', MyProfileController])
     .config(AppConfig);
 
 function AppConfig($routeProvider) {
-    $routeProvider.when('/', {
-        // controller: 'MainController as mainController',
-    }).when('/my-profile', {
-        // controller: 'MyProfileController as myProfileController',
-    });
+    $routeProvider.when('/', {})
+        .when('/my-profile', {});
 }
 
 var initialized = false;
@@ -36,10 +32,8 @@ function MainController($scope, $firebaseArray, $location) {
             document.querySelector('#welcome').textContent = ('Welcome ' + user.displayName + '!');
             var resetUserImg = document.querySelectorAll('.userImg');
             for (var i = 0; i < resetUserImg.length; i++) {
-                resetUserImg[i].src = 'https://graph.facebook.com/104651290584023/picture';
+                resetUserImg[i].src = user.photoURL;
             }
-            var userImg = document.querySelectorAll('.userImg').src = 'https://graph.facebook.com/104651290584023/picture';
-            console.log(userImg);
         } else {
             // No user is signed in.
             showLoginScreen();
@@ -74,18 +68,15 @@ function MainController($scope, $firebaseArray, $location) {
         $scope.formValid = form.checkValidity();
         //manually trigger $digest loop
         $scope.$applyAsync();
-        // console.log($scope.formValid, $scope.geolocationAvailable)
     } // returns true when valid        
 
     $scope.$on('$routeChangeSuccess', _ => {
         var path = $location.path();
         if (path === '/my-profile') {
             var myProfileDisplay = document.querySelector('#myProfile')
-            setTimeout(getUserInfo, 1000)
-            // myProfileDisplay.style.display = '';
+            setTimeout(_ => getUserInfo($scope), 1000); // await firebase to load
             $scope.showMyProfile = true;
             $scope.$applyAsync();
-            // console.log(myProfileDisplay);
         } else {
             $scope.showMyProfile = false;
             $scope.$applyAsync();
@@ -94,12 +85,13 @@ function MainController($scope, $firebaseArray, $location) {
     initMap($scope);
 
     $scope.updatePost = _ => updatePost($scope);
+    $scope.removeMushroom = mushroomId => {
+
+        firebase.database().ref('mushrooms/' + mushroomId).remove();
+    }
 
 }
 
-function MyProfileController($scope, $firebaseArray) {
-
-}
 
 var loginButton = document.querySelector('#loginButton')
 var logOutButton = document.querySelector('#logOutButton');
@@ -113,11 +105,6 @@ function login() {
         // The signed-in user info.
         var user = result.user;
         logOutButton.style.display = '';
-
-
-        // document.querySelector('#userLogin').appendChild(logOutButton);
-        // logOutButton.onclick = logOut;
-
     }).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -130,38 +117,7 @@ function login() {
 }
 
 function logOut() {
-    firebase.auth().signOut().then(function() {
-        // document.querySelector('#uploadForm').style.display = 'none';
-        // document.querySelector('#loginSection').style.display = '';
-        // Sign-out successful.
-    }).catch(function(error) {
-        // An error happened.
-    });
-}
-
-
-function checkUser() {
-    //check if any user is signed in
-    var user = firebase.auth().currentUser;
-    if (user) {
-        console.log(providerData);
-    } else {}
-    //console.log(user)
-    // if (user) {
-    //     user.providerData.forEach(function(profile) {
-    //         //write user to firebase
-    //         firebase.database().ref('mushrooms/' + user.uid).set({
-    //             facebookId: profile.uid,
-    //             facebookName: profile.displayName,
-    //             facebookAvatar: profile.photoURL
-    //         });
-    //         // // console.log("Sign-in provider: " + profile.providerId);
-    //         // console.log("  Provider-specific UID: " + profile.uid);
-    //         // console.log("  Name: " + profile.displayName);
-    //         // console.log("  Email: " + profile.email);
-    //         // console.log("  Photo URL: " + profile.photoURL);
-    //     });
-    // }
+    firebase.auth().signOut();
 }
 
 function showLoginScreen() {
@@ -175,23 +131,27 @@ function hideLoginScreen() {
 }
 
 
-
-function deleteUser() {
+function getMushroomPost() {
     var user = firebase.auth().currentUser;
-    // firebase.database().ref('mushrooms/').orderByChild('userId').equalTo(user.uid).once("value")
-    //     .then(function(snapshot) {
-    //         console.log(snapshot.val());
-    //     });
+    firebase.database().ref('mushrooms/').orderByChild('userId').equalTo(user.uid).once("value")
+        .then(function(snapshot) {
+            console.log(snapshot.val());
+        });
+}
 
-    // delete user's posts
-    user.delete().then(function() {
-        // User deleted.
-        //redirect to main page
-        window.location.hash = '#!'
-    }).catch(function(error) {
-        console.log(error)
-        alert(error);
-    });
+function clearUserProfile() {
+    var myUserId = firebase.auth().currentUser.providerData[0].uid;
+    firebase
+        .database()
+        .ref('mushrooms/')
+        .orderByChild('userId')
+        .equalTo(myUserId)
+        .on('value', snapshot => {
+            snapshot.forEach(function(child) {
+                firebase.database().ref('mushrooms/' + child.key).remove();
+            });
+        });
+    window.location.hash = '#!'
 }
 
 async function updatePost(angularScope) {
@@ -331,8 +291,6 @@ function showChosenImg(files) {
 
 }
 
-
-
 // Automatically called by Google Maps, it has to have this particular name
 
 function initMap(angularScope) {
@@ -372,38 +330,14 @@ function clearAllMarkers() {
     mapMarkers = [];
 }
 
-var container = document.querySelector('.container')
-var myMushroomTileTemplate = document.querySelector('.myMushroomTile');
-myMushroomTileTemplate.remove();
-
-function getUserInfo() {
+function getUserInfo(angularScope) {
     var myUser = firebase.auth().currentUser
+    if (!myUser) return;
     var myUserId = myUser.providerData[0].uid;
     document.querySelector('#userName').textContent = myUser.displayName + '\'s mushrooms: ';
-    console.log(myUser)
-    firebase.database().ref('mushrooms/').orderByChild('userId').equalTo(myUserId).once("value")
-        .then(function(snapshot) {
-            var myMushrooms = snapshot.val();
-            if (!myMushrooms) {
-                //if no result found, create div element with text "You haven't uploaded any mushrooms."
-                var div = document.createElement('div');
-                div.textContent = 'You haven\'t uploaded any mushrooms.';
-                container.append(div);
-            } else {
-                container.textContent = '';
-                var myMushroomList = Object.keys(myMushrooms).map(i => myMushrooms[i]);
-                // console.log(myMushroomList)
-                myMushroomList.forEach(myMushroom => {
-                    var myMushroomTile = myMushroomTileTemplate.cloneNode(true);
-                    myMushroomTile.querySelector('.uploadedMushroom').src = myMushroom.image;
-                    myMushroomTile.querySelector('.mushroomName').textContent = myMushroom.name;
-                    var time = new Date(myMushroom.timestamp);
-                    myMushroomTile.querySelector('.description').textContent = myMushroom.description;
-                    myMushroomTile.querySelector('.createTime').textContent = 'Created at : ' + new Date(myMushroom.timestamp).toDateString();
-                    container.appendChild(myMushroomTile);
-
-                });
-            }
-
-        });
+    angularScope.$watch('mushrooms', _ => {
+        console.log(angularScope.mushrooms);
+        angularScope.myMushrooms = angularScope.mushrooms.filter(mushroom => mushroom.userId === myUserId);
+        angularScope.$applyAsync();
+    }, true);
 }

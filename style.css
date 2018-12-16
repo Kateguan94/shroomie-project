@@ -2,16 +2,50 @@ html,
 body {
     height: 100%;
     margin: 0;
+    font-family: cooper-black-std, serif;
+    color: #604847;
+}
+
+input,
+textarea,
+button {
+    font-family: 'Indie Flower', cursive;
+    margin: 4px 0;
+}
+
+
+input,
+input[type="file"],
+textarea {
+    outline: none;
+    padding: 8px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+button {
+    border: none;
+    background-color: #FFADE2;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-size: 14px;
+    color: #FFF5FB;
+    outline: none;
+}
+
+.mobileButtons {
+    display: none;
 }
 
 .flexBox {
-    margin: 0;
-    min-height: 100vh;
     display: flex;
     flex-direction: row;
 }
 
 #websiteName {
+    color: #604847;
+    letter-spacing: 2px;
+    padding: 50px;
     text-align: center;
 }
 
@@ -19,24 +53,27 @@ body {
     height: 64vh;
     width: 100%;
     max-width: 100%;
+    margin: 0 14px;
 }
 
-.map,
-#searchSection {
-    margin: 0 1vw;
+#search {
+    margin: 0 10px;
 }
 
-#uploadSection {}
-
+#uploadSection {
+    margin: 0 36px;
+}
 
 #uploadForm {
-    height: 100%;
+    display: none;
+    justify-content: center;
     display: flex;
     flex-direction: column;
 }
 
 #uploadSection textarea {
     resize: none;
+    min-height: 100px;
 }
 
 #progressBar {
@@ -60,6 +97,11 @@ nav {
     width: 60px;
 }
 
+#userName {
+    font-size: 30px;
+    padding-left: 16px;
+}
+
 .userProfile {
     display: flex;
     flex-direction: column;
@@ -71,17 +113,18 @@ nav {
 
 .userImg {
     width: 120px;
-   
+    border-radius: 25px;
 }
 
-#deleteUser {
-	display: flex;
-	justify-content: center;
-	border:1px solid grey;
-	border-radius: 4px;
-	background-color: white;
-	font-size: 10px;
-	width: 90px;
+.clearUser {
+    display: flex;
+    justify-content: center;
+    border: 1px solid grey;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 10px;
+    width: 120px;
+    height: 20px;
 }
 
 .container {
@@ -92,10 +135,85 @@ nav {
 }
 
 .myMushroomTile {
+    border: 2px solid #ff9a9c;
+    border-radius: 36px;
     max-width: 255px;
     padding: 16px;
 }
 
 .uploadedMushroom {
     width: 225px;
+    border-radius: 25px;
+}
+
+@media only screen and (max-width: 780px) {
+
+    body {
+        overflow: hidden;
+    }
+
+    main {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: calc(100vh - 130px);
+    }
+
+    .sliding>* {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .slided>* {
+        transform: translateX(-100vw);
+    }
+
+    #websiteName {
+        padding: 8px;
+    }
+
+    .map {
+        height: 64vh;
+        width: 100%;
+        max-width: 100%;
+        margin: 6px 18px;
+    }
+
+    #uploadSection {
+        position: absolute;
+        width: 80vw;
+        left: 100vw;
+        padding: 10vw;
+        overflow: auto;
+        height: calc(100vh - 222px);
+    }
+
+    .mobileButtons {
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        top: calc(100vh - 20px);
+        background-color: #1D141A;
+        width: 100vw;
+    }
+
+    #userInfo {
+        text-align: center;
+    }
+
+    #logOutButton {
+        width: 120px;
+    }
+
+    .mobileButtons>* {
+        padding: 8px;
+        flex: 1 1;
+        text-align: center;
+        cursor: pointer;
+        text-decoration: none;
+        color: #FFCBEE;
+    }
+
+    #myProfile {
+        height: 100vh;
+        overflow: auto;
+    }
 }

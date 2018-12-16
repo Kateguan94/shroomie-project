@@ -4,7 +4,7 @@
 <head>
     <title></title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- <link rel="stylesheet" href="bootstrap.min.css"> -->
     <!-- <link rel="stylesheet" href="style.css"> -->
@@ -15,7 +15,8 @@
     <script defer src="app.js"></script>
     <!-- <script defer src="directive.js"></script> -->
     <!-- <script defer src="controller.js"></script> -->
-    <script defer src="main.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/fsk3xmy.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs"></script>
 </head>
@@ -23,22 +24,19 @@
 <body class="body" ng-app="app">
     <div ng-controller="MainController">
         <div ng-show="!showMyProfile">
-            <h1 id="websiteName" onclick="getFacebookInfo()">Shroomie</h1>
-            <main class="flexBox" layout="row">
-                <div id="searchSection">
-                    <input type="text" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
+            <h1 id="websiteName">Shroomie</h1>
+            <main class="flexBox sliding" layout="row">
+                <div id="search" class="input-field">
+                    <input type="search" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
                     <div ng-repeat="mushroom in filteredMushrooms">
                         <div>
                             <div>{{mushroom.name}}</div>
-                            <!-- <div ng-bind="mushroom.lat"></div> -->
-                            <!-- <div ng-bind="mushroom.long"></div> -->
                         </div>
-                        <!-- {{ mushroom | json }} -->
                     </div>
                 </div>
                 <div class="map">Map</div>
                 <div id="uploadSection">
-                    <form id="uploadForm" style="display: none; justify-content: center;">
+                    <form id="uploadForm">
                         <div id="userInfo">
                             <a href="#!/my-profile"><img class="userImg" src=""></a>
                             <h5 id="welcome"></h5>
@@ -57,6 +55,13 @@
                         <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
                     </div>
             </main>
+            <div class="mobileButtons">
+                <div onclick="this.parentElement.previousElementSibling.classList.remove('slided')">Map</div>
+                <div onclick="this.parentElement.previousElementSibling.classList.add('slided')">Upload</div>
+                <a href="#!/my-profile">
+            		My mushrooms
+            	</a>
+            </div>
         </div>
         <div ng-show="showMyProfile" id="myProfile">
             <nav>
@@ -66,17 +71,18 @@
             </nav>
             <div class="userProfile">
                 <img class="userImg" src="">
-                <div id="deleteUser" onclick="deleteUser()">Delete my account</div>
+                <div class="clearUser" onclick="clearUserProfile()">Clear my profile data</div>
             </div>
-            </aside>
             <div>
-                <h5 id="userName"></h5>
+                <h5 ng-show="myMushrooms.length" id="userName"></h5>
                 <div class="container">
-                    <div class="myMushroomTile">
-                        <img class="uploadedMushroom" src="">
-                        <h3 class="mushroomName"></h3>
-                        <h4 class="description"></h4>
-                        <h4 class="createTime"></h4>
+                    <div ng-show="!myMushrooms.length">You haven't uploaded any mushrooms.</div>
+                    <div class="myMushroomTile" ng-repeat="mushroom in myMushrooms">
+                        <img class="uploadedMushroom" src="{{mushroom.image}}">
+                        <h3 class="mushroomName" ng-bind="mushroom.name"></h3>
+                        <h4 class="description" ng-bind="mushroom.description"></h4>
+                        <h4 class="createTime">{{ mushroom.timestamp | date:'longDate' }}</h4>
+                        <button ng-click="removeMushroom(mushroom.$id)">Remove</button>
                     </div>
                 </div>
             </div>
