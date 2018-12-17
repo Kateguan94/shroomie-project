@@ -4,7 +4,7 @@
 <head>
     <title></title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- <link rel="stylesheet" href="bootstrap.min.css"> -->
     <!-- <link rel="stylesheet" href="style.css"> -->
@@ -15,42 +15,78 @@
     <script defer src="app.js"></script>
     <!-- <script defer src="directive.js"></script> -->
     <!-- <script defer src="controller.js"></script> -->
-    <script defer src="main.js"></script>
-    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs&callback=initMap"></script>
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/fsk3xmy.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOANe01F4J8ipKjBt8Y-YoED8c7xIVSbs"></script>
 </head>
 
-
 <body class="body" ng-app="app">
-    <div class="row">
-        <div class="col-4">
-            <h1 class="shroomie">Shroomie</h1>
-            <div class="filter-sidebar">
-                <h3>Choose specific mushrooms</h3>
-                <ul>
-                    <li>
-                        <a href="#">Champinion</a>
-                    </li>
-                    <li>
-                        <a href="#">Kantarell</a>
-                    </li>
-                    <li>
-                        <a href="#">Karl-Johan</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="geo-map">
-                <div class="map" style="height: 50vh;">Map here</div>
-            </div>
-            <div class="findings-sidebar">
-                <input type="file">
-                <input maxlength="40">Name of Mushroom</input>
-                <textarea maxlength="140">Description</textarea>
-                <button type="button" class="btn">Submit</button>
+    <div ng-controller="MainController">
+        <div ng-show="!showMyProfile">
+            <h1 id="websiteName">Shroomie</h1>
+            <main class="flexBox sliding" layout="row">
+                <div id="search" class="input-field">
+                    <input type="search" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
+                    <div ng-repeat="mushroom in filteredMushrooms">
+                        <div>
+                            <div>{{mushroom.name}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="map">Map</div>
+                <div id="uploadSection">
+                    <form id="uploadForm">
+                        <div id="userInfo">
+                            <a href="#!/my-profile"><img class="userImg" src=""></a>
+                            <h5 id="welcome"></h5>
+                            <button id="logOutButton" onclick="logOut()">Log Out</button>
+                        </div>
+                        <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
+                        <textarea maxlength="140" placeholder="Description"></textarea>
+                        <img id="imgUpload" src="" width="100vw">
+                        <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
+                        <div id="progressBar" ng-show="uploadInProgress">
+                            <div id="bar" style="width: {{uploadInProgress}}%;"></div>
+                        </div>
+                        <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
+                    </form>
+                    <div id="loginSection" style="display: none;">
+                        <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
+                    </div>
+            </main>
+            <div class="mobileButtons">
+                <div onclick="this.parentElement.previousElementSibling.classList.remove('slided')">Map</div>
+                <div onclick="this.parentElement.previousElementSibling.classList.add('slided')">Upload</div>
+                <a href="#!/my-profile">
+            		My mushrooms
+            	</a>
             </div>
         </div>
-    </div>
-    </div>
-    <div ng-view>
+        <div ng-show="showMyProfile" id="myProfile">
+            <nav>
+                <a href="#!/">
+        		<img class="mushroomLogo" src="shroomie-face.png"></img>
+        	  </a>
+            </nav>
+            <div class="userProfile">
+                <img class="userImg" src="">
+                <div class="clearUser" onclick="clearUserProfile()">Clear my profile data</div>
+            </div>
+            <div>
+                <h5 ng-show="myMushrooms.length" id="userName"></h5>
+                <div class="container">
+                    <div ng-show="!myMushrooms.length">You haven't uploaded any mushrooms.</div>
+                    <div class="myMushroomTile" ng-repeat="mushroom in myMushrooms">
+                        <img class="uploadedMushroom" src="{{mushroom.image}}">
+                        <h3 class="mushroomName" ng-bind="mushroom.name"></h3>
+                        <h4 class="description" ng-bind="mushroom.description"></h4>
+                        <h4 class="createTime">{{ mushroom.timestamp | date:'longDate' }}</h4>
+                        <button ng-click="removeMushroom(mushroom.$id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
