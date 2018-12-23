@@ -24,70 +24,73 @@
 <body class="body" ng-app="app">
     <div ng-controller="MainController">
         <div ng-show="!showMyProfile">
-            <h1 id="websiteName">Shroomie</h1>
-            <main class="flexBox sliding" layout="row">
-                <div id="search" class="input-field">
-                    <input type="search" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
-                    <div ng-repeat="mushroom in filteredMushrooms">
-                        <div>
-                            <div>{{mushroom.name}}</div>
+            <div class="shroomieSection">
+                <h1 id="websiteName">Shroomie</h1>
+                <img class="shroomImg" src="shroomie-face.png">
+        	</div>
+                <main class="flexBox sliding" layout="row">
+                    <div id="search" class="input-field">
+                        <input type="search" ng-model="search" placeholder="Search" ng-change="filterMushrooms()">
+                        <div ng-repeat="mushroom in filteredMushrooms">
+                            <div>
+                                <div>{{mushroom.name}}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="map">Map</div>
-                <div id="uploadSection">
-                    <form id="uploadForm">
-                        <div id="userInfo">
-                            <a href="#!/my-profile"><img class="userImg" src=""></a>
-                            <h5 id="welcome"></h5>
-                            <button id="logOutButton" onclick="logOut()">Log Out</button>
+                    <div class="map">Map</div>
+                    <div id="uploadSection">
+                        <form id="uploadForm">
+                            <div id="userInfo">
+                                <a href="#!/my-profile"><img class="userImg" src=""></a>
+                                <h5 id="welcome"></h5>
+                                <button id="logOutButton" onclick="logOut()">Log Out</button>
+                            </div>
+                            <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
+                            <textarea maxlength="140" placeholder="Description"></textarea>
+                            <img id="imgUpload" src="" width="100vw">
+                            <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
+                            <div id="progressBar" ng-show="uploadInProgress">
+                                <div id="bar" style="width: {{uploadInProgress}}%;"></div>
+                            </div>
+                            <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
+                        </form>
+                        <div id="loginSection" style="display: none;">
+                            <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
                         </div>
-                        <input maxlength="40" placeholder="Name of Mushroom" data-input="name" required>
-                        <textarea maxlength="140" placeholder="Description"></textarea>
-                        <img id="imgUpload" src="" width="100vw">
-                        <input type="file" accept="image/gif, image/jpeg, image/png" onchange=" showChosenImg(this.files)" required></input>
-                        <div id="progressBar" ng-show="uploadInProgress">
-                            <div id="bar" style="width: {{uploadInProgress}}%;"></div>
-                        </div>
-                        <button type="submit" ng-click="updatePost()" ng-disabled="!formValid">Submit</button>
-                    </form>
-                    <div id="loginSection" style="display: none;">
-                        <button id="loginButton" onclick="login()">Login with Facebook to share mushrooms</button>
-                    </div>
-            </main>
-            <div class="mobileButtons">
-                <div onclick="this.parentElement.previousElementSibling.classList.remove('slided')">Map</div>
-                <div onclick="this.parentElement.previousElementSibling.classList.add('slided')">Upload</div>
-                <a href="#!/my-profile">
+                </main>
+                <div class="mobileButtons">
+                    <div onclick="this.parentElement.previousElementSibling.classList.remove('slided')">Map</div>
+                    <div onclick="this.parentElement.previousElementSibling.classList.add('slided')">Upload</div>
+                    <a href="#!/my-profile">
             		My mushrooms
             	</a>
+                </div>
             </div>
-        </div>
-        <div ng-show="showMyProfile" id="myProfile">
-            <nav>
-                <a href="#!/">
+            <div ng-show="showMyProfile" id="myProfile">
+                <nav>
+                    <a href="#!/">
         		<img class="mushroomLogo" src="shroomie-face.png"></img>
         	  </a>
-            </nav>
-            <div class="userProfile">
-                <img class="userImg" src="">
-                <div class="clearUser" onclick="clearUserProfile()">Clear my profile data</div>
-            </div>
-            <div>
-                <h5 ng-show="myMushrooms.length" id="userName"></h5>
-                <div class="container">
-                    <div ng-show="!myMushrooms.length">You haven't uploaded any mushrooms.</div>
-                    <div class="myMushroomTile" ng-repeat="mushroom in myMushrooms">
-                        <img class="uploadedMushroom" src="{{mushroom.image}}">
-                        <h3 class="mushroomName" ng-bind="mushroom.name"></h3>
-                        <h4 class="description" ng-bind="mushroom.description"></h4>
-                        <h4 class="createTime">{{ mushroom.timestamp | date:'longDate' }}</h4>
-                        <button ng-click="removeMushroom(mushroom.$id)">Remove</button>
+                </nav>
+                <div class="userProfile">
+                    <img class="userImg" src="">
+                    <div class="clearUser" onclick="clearUserProfile()">Clear my profile data</div>
+                </div>
+                <div>
+                    <h5 ng-show="myMushrooms.length" id="userName"></h5>
+                    <div class="container">
+                        <div ng-show="!myMushrooms.length">You haven't uploaded any mushrooms.</div>
+                        <div class="myMushroomTile" ng-repeat="mushroom in myMushrooms">
+                            <img class="uploadedMushroom" src="{{mushroom.image}}">
+                            <h3 class="mushroomName" ng-bind="mushroom.name"></h3>
+                            <h4 class="description" ng-bind="mushroom.description"></h4>
+                            <h4 class="createTime">{{ mushroom.timestamp | date:'longDate' }}</h4>
+                            <button ng-click="removeMushroom(mushroom.$id)">Remove</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </body>
 
 </html>
