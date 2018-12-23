@@ -4,11 +4,12 @@ body {
     margin: 0;
     font-family: cooper-black-std, serif;
     color: #000;
-    background: repeating-linear-gradient(45deg,
-        #24cabf,
-        #24cabf 10px,
-        #00c0b6 10px,
-        #00c0b6 20px);
+    background: repeating-linear-gradient(
+    45deg,
+    #24cabf,
+    #24cabf 10px,
+    #00c0b6 10px,
+    #00c0b6 20px);
 
 }
 
@@ -48,13 +49,13 @@ button {
     flex-direction: row;
 }
 
-.shroomImg {
+.shroom-img {
     height: 20vh;
     width: auto;
 }
 
 #websiteName {
-
+    
     letter-spacing: -1px;
     padding: 50px;
     text-align: center;
@@ -62,24 +63,25 @@ button {
     /*-webkit-text-stroke-color: #604847;
     -webkit-text-stroke-width: 5px; */
     margin: 0;
-    background: repeating-linear-gradient(45deg,
-        #24cabf,
-        #24cabf 10px,
-        #00c0b6 10px,
-        #00c0b6 20px);
+    background: repeating-linear-gradient(
+    45deg,
+    #24cabf,
+    #24cabf 10px,
+    #00c0b6 10px,
+    #00c0b6 20px);
     color: #FFADE2;
     text-shadow: 0 1px 0 rgb(219, 150, 195),
-        0 2px 0 rgb(189, 129, 168),
-        0 3px 0 rgb(139, 96, 124),
-        0 4px 0 rgb(124, 86, 111),
-        0 5px 0 rgb(114, 79, 102),
-        0 6px 1px rgba(0, 0, 0, .1),
-        0 0 5px rgba(0, 0, 0, .1),
-        0 1px 3px rgba(0, 0, 0, .3),
-        0 3px 5px rgba(0, 0, 0, .2),
-        0 5px 10px rgba(0, 0, 0, .25),
-        0 10px 10px rgba(0, 0, 0, .2),
-        0 20px 20px rgba(0, 0, 0, .15);
+               0 2px 0 rgb(189, 129, 168),
+               0 3px 0 rgb(139, 96, 124),
+               0 4px 0 rgb(124, 86, 111),
+               0 5px 0 rgb(114, 79, 102),
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15); 
 }
 
 
@@ -205,7 +207,7 @@ nav {
     }
 
     .map {
-        height: 55vh;
+        height: 64vh;
         width: 100%;
         max-width: 100%;
         margin: 6px 18px;
@@ -217,14 +219,14 @@ nav {
         left: 100vw;
         padding: 10vw;
         overflow: auto;
-        height: calc(100vh - 300px);
+        height: calc(100vh - 222px);
     }
 
     .mobileButtons {
         display: flex;
         flex-direction: row;
         position: absolute;
-        top: calc(100vh - 33px);
+        top: calc(100vh - 20px);
         background-color: #1D141A;
         width: 100vw;
     }
@@ -251,4 +253,3 @@ nav {
         overflow: auto;
     }
 }
-

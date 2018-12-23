@@ -296,7 +296,7 @@ function showChosenImg(files) {
 function initMap(angularScope) {
     var map = new google.maps.Map(document.querySelector('.map'), {
         center: { lat: 56.049580999999996, lng: 12.7216703 },
-        zoom: 5
+        zoom: 10
     });
 
     angularScope.$watch('filteredMushrooms', _ => {
